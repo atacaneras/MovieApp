@@ -12,6 +12,12 @@ namespace MovieApp.Pages
 {
     public class DetailsModel : PageModel
     {
+        private readonly IConfiguration _configuration;
+
+        public DetailsModel(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public Result SelectedMovie { get; set; }
         public List<Video> MovieVideos { get; set; } = new List<Video>();
         public List<Result> SimilarMovies { get; set; } = new List<Result>();
@@ -45,7 +51,8 @@ namespace MovieApp.Pages
                 var client = new RestClient(options);
                 var request = new RestRequest("");
                 request.AddHeader("accept", "application/json");
-                request.AddHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzNjZjJmMmJmMTdmYmY0MmQxZmY2ZGNjMGJmZDY0NyIsInN1YiI6IjY0ZDI1ZGRmNTQ5ZGRhMDExYzI5YjE3YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.qTpCDEqFXSnb-Apj_aD_PMycKfPdxVDewqvwQJg2aqI"); // Replace with your API key
+                var githubToken = _configuration.GetSection("Tokens:MovieDb").Value;
+                request.AddHeader("Authorization", $"Bearer {githubToken}");
                 var response = await client.GetAsync(request);
 
                 var output = response.Content;
@@ -71,7 +78,8 @@ namespace MovieApp.Pages
                 var client = new RestClient(options);
                 var request = new RestRequest("");
                 request.AddHeader("accept", "application/json");
-                request.AddHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzNjZjJmMmJmMTdmYmY0MmQxZmY2ZGNjMGJmZDY0NyIsInN1YiI6IjY0ZDI1ZGRmNTQ5ZGRhMDExYzI5YjE3YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.qTpCDEqFXSnb-Apj_aD_PMycKfPdxVDewqvwQJg2aqI");
+                var githubToken = _configuration.GetSection("Tokens:MovieDb").Value;
+                request.AddHeader("Authorization", $"Bearer {githubToken}");
                 var response = await client.GetAsync(request);
 
                 var output = response.Content;
@@ -93,7 +101,8 @@ namespace MovieApp.Pages
                 var client = new RestClient(options);
                 var request = new RestRequest("");
                 request.AddHeader("accept", "application/json");
-                request.AddHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzNjZjJmMmJmMTdmYmY0MmQxZmY2ZGNjMGJmZDY0NyIsInN1YiI6IjY0ZDI1ZGRmNTQ5ZGRhMDExYzI5YjE3YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.qTpCDEqFXSnb-Apj_aD_PMycKfPdxVDewqvwQJg2aqI");
+                var githubToken = _configuration.GetSection("Tokens:MovieDb").Value;
+                request.AddHeader("Authorization", $"Bearer {githubToken}");
                 var response = await client.GetAsync(request);
 
                 var output = response.Content;

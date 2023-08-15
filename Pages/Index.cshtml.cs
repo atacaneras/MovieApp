@@ -15,6 +15,11 @@ namespace MovieApp.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly IConfiguration _configuration;
+        public IndexModel(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public MovieSearchResult? SearchResult { get; set; }
         public List<Result> UpcomingMoviesFromTurkey { get; set; } = new List<Result>();
         public List<string> SearchedKeywords { get; set; } = new List<string>();
@@ -75,7 +80,8 @@ namespace MovieApp.Pages
                 var client = new RestClient(options);
                 var request = new RestRequest("");
                 request.AddHeader("accept", "application/json");
-                request.AddHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzNjZjJmMmJmMTdmYmY0MmQxZmY2ZGNjMGJmZDY0NyIsInN1YiI6IjY0ZDI1ZGRmNTQ5ZGRhMDExYzI5YjE3YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.qTpCDEqFXSnb-Apj_aD_PMycKfPdxVDewqvwQJg2aqI");
+                var githubToken = _configuration.GetSection("Tokens:MovieDb").Value;
+                request.AddHeader("Authorization", $"Bearer {githubToken}");
                 var response = await client.GetAsync(request);
 
                 var output = response.Content;
@@ -97,7 +103,8 @@ namespace MovieApp.Pages
                 var client = new RestClient(options);
                 var request = new RestRequest("");
                 request.AddHeader("accept", "application/json");
-                request.AddHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzNjZjJmMmJmMTdmYmY0MmQxZmY2ZGNjMGJmZDY0NyIsInN1YiI6IjY0ZDI1ZGRmNTQ5ZGRhMDExYzI5YjE3YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.qTpCDEqFXSnb-Apj_aD_PMycKfPdxVDewqvwQJg2aqI");
+                var githubToken = _configuration.GetSection("Tokens:MovieDb").Value;
+                request.AddHeader("Authorization", $"Bearer {githubToken}");
                 var response = await client.GetAsync(request);
 
                 var output = response.Content;

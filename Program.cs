@@ -1,4 +1,9 @@
+using Microsoft.Extensions.Configuration;
 var builder = WebApplication.CreateBuilder(args);
+
+ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+IConfiguration configuration = configurationBuilder.AddUserSecrets<Program>().Build();
+string githubToken = configuration.GetSection("github")["Authorization"];
 
 // Add services to the container.
 builder.Services.AddRazorPages();
