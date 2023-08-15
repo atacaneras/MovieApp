@@ -1,0 +1,172 @@
+﻿@page "{id:int}"
+@model MovieApp.Pages.DetailsModel
+@{
+    ViewData["Title"] = "Movie Details";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/site.css" rel="stylesheet" />
+
+    <style>
+        .ataflix-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 18px;
+            text-decoration: none;
+            color: #fff;
+            z-index: 1000;
+        }
+
+        .movie-details {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .movie-poster {
+            max-width: 200px;
+            width: auto;
+            height: auto;
+            margin-right: 20px;
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
+        .movie-info-container {
+            background-color: rgba(128, 128, 128, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+            margin: 10px;
+        }
+
+        .release-date,
+        .vote-average {
+            font-size: 14px;
+            color: white;
+            margin-top: 5px; 
+            font-weight: normal;
+        }
+
+        .movie-title {
+            font-size: 24px;
+            color: white;
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+
+        .white-text {
+            color: white;
+            margin-left: 20px;
+        }
+
+        .section-title {
+            color: white;
+        }
+
+        /* Custom scrollbar styles */
+        /* width */
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px red;
+            border-radius: 10px;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #2c2c2b;
+            border-radius: 7px;
+        }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #b30000;
+            }
+    </style>
+</head>
+<body>
+    <a class="ataflix" style="text-decoration:none" href="/">ATAFLIX</a>
+    <div class="movie-title">@Model.SelectedMovie.title</div>
+    <div class="movie-details">
+        @if (!string.IsNullOrEmpty(Model.SelectedMovie.poster_path))
+        {
+            <img class="movie-poster" src="https://image.tmdb.org/t/p/w500/@Model.SelectedMovie.poster_path" alt="@Model.SelectedMovie.title">
+        }
+        else
+        {
+            <img class="movie-poster" src="~/images/no_image_available.png" alt="No Poster Available">
+        }
+        <div class="movie-info-container">
+            @if (string.IsNullOrEmpty(Model.SelectedMovie.overview))
+            {
+                <p>Missing movie overview</p>
+            }
+            else
+            {
+                <p>@Model.SelectedMovie.overview</p>
+            }
+            <div class="release-date"><strong>Release Date:</strong> @Model.SelectedMovie.release_date</div>
+            <div class="vote-average"><strong>Vote Average:</strong> @Model.SelectedMovie.vote_average</div>
+        </div>
+    </div>
+
+    <div class="videos-container" style="margin-left: 20px;">
+        <h2 class="section-title">Videos</h2>
+        <div class="videos" data-simplebar style="overflow-x: auto;">
+            @if (Model.MovieVideos.Any())
+            {
+                <ul style="list-style-type: none; padding: 0; display: flex; flex-direction: row; overflow-x: auto;">
+                    @foreach (var video in Model.MovieVideos)
+                    {
+                        <li style="margin-right: 10px;">
+                            <iframe width="280" height="157" src="https://www.youtube.com/embed/@video.Key" frameborder="0" allowfullscreen></iframe>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <h5>No videos available.</h5>
+            }
+        </div>
+    </div>
+
+    <div class="similar-movies">
+        <h2 class="white-text">Similar Movies</h2>
+        <div class="similar-movies-container">
+            @if (Model.SimilarMovies.Any())
+            {
+                @foreach (var movie in Model.SimilarMovies)
+                {
+                    <div class="similar-movie-card">
+                        <a href="/Details/@movie.id">
+                            @if (!string.IsNullOrEmpty(movie.poster_path))
+                            {
+                                <img class="similar-movie-poster" src="https://image.tmdb.org/t/p/w500/@movie.poster_path" alt="@movie.title">
+                            }
+                            else
+                            {
+                                <img class="similar-movie-poster" src="~/images/no_image_available.png" alt="No Poster Available">
+                            }
+                        </a>
+                        <div class="similar-movie-title">
+                            <a href="/Details/@movie.id">@movie.title</a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <h5>No similar movies available.</h5>
+            }
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+﻿@page
+@model MovieApp.Pages.IndexModel
+@{
+    ViewData["Title"] = "Movie Search";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        @{
+            string _suffix = "";
+            if (!string.IsNullOrEmpty(Model.Keyword))
+            {
+                _suffix = $"?lang={Model.Language}";
+            }
+            <a class="ataflix" style="text-decoration:none" href=@string.Format("{0}",_suffix)>ATAFLIX</a>
+        }
+
+        <div class="language-selector">
+            @{
+                string suffix = "";
+                if (!string.IsNullOrEmpty(Model.Keyword))
+                {
+                    suffix = $"&keyword={Model.Keyword}";
+                }
+            }
+
+            <a class="myFont" href=@string.Format("{0}{1}", "?lang=tr", suffix)>TR</a>
+            <span class="separator"> | </span>
+            <a href=@string.Format("{0}{1}", "?lang=en", suffix)>EN</a>
+        </div>
+    </header>
+    <div class="content" style="text-align: center;">
+        <form method="get">
+            <input type="text" name="keyword" autocomplete="off" placeholder="@(Model.Language == "tr" ? "Film ismi girin..." : "Search movies...")" value="@Model.Keyword">
+            <input type="hidden" name="lang" value="@Model.Language" />
+            <input type="hidden" name="searchedKeywords" value="@string.Join(",", Model.SearchedKeywords)">
+            <button type="submit">
+                @(
+                    Model.Language == "tr" ? "Ara" : "Search")
+            </button>
+        </form>
+
+        <div class="recent-searches-container">
+    <div class="recent-searches">
+        <div style="text-align: center; margin-bottom: 10px;">
+            <h3>@(Model.Language == "tr" ? "Son arananlar" : "Recent searches")</h3>
+        </div>
+        <ul class="search-list" style="display: flex; justify-content: center; align-items: flex-start; padding: 0;">
+            @for (int i = 0; i < Model.SearchedKeywords.Count; i++)
+            {
+                <li style="margin: 5px;">
+                    <span id="searchLink@(i)" style="color: white; font-style: italic; cursor: default;">@Model.SearchedKeywords[i]</span>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+        @if (Model.SearchResult != null)
+        {
+            <div id="searchResult">
+                @if (Model.SearchResult.results.Count > 0)
+                {
+                    var lastKeyword = Model.Keyword;
+                    var titleWords = lastKeyword.Split(' ')
+                    .Select(word => $"{word.First().ToString().ToUpper() + word.Substring(1)}");
+                    var title = Model.Language == "tr"
+                    ? "\"" + string.Join(" ", titleWords) + "\" ile ilgili sonuçlar"
+                    : "Results with \"" + string.Join(" ", titleWords) + "\"";
+                    <h3>@title</h3>
+
+                    <div class="movie-container">
+                        @foreach (var movie in Model.SearchResult.results)
+                        {
+                            <div class="movie-card">
+                                <a href="/Details/@movie.id">
+                                    @if (!string.IsNullOrEmpty(movie.poster_path))
+                                    {
+                                        <img class="movie-poster" src="https://image.tmdb.org/t/p/w500/@movie.poster_path" alt="@movie.title">
+                                    }
+                                    else
+                                    {
+                                        <img class="movie-poster" src="~/images/no_image_available.png" alt="No Poster Available">
+                                    }
+                                </a>
+                                <div class="movie-title">
+                                    <a href="/Details/@movie.id">@movie.title</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    var lastKeyword = Model.Keyword;
+                    var titleWords = lastKeyword.Split(' ')
+                    .Select(word => $"{word.First().ToString().ToUpper() + word.Substring(1)}");
+                    var title = Model.Language == "tr"
+                    ? "\"" + string.Join(" ", titleWords) + "\" ile ilgili sonuç bulunamadı."
+                    : "No results found with \"" + string.Join(" ", titleWords) + "\".";
+                    <h3>@title</h3>
+                }
+            </div>
+        }
+
+        @if (Model.UpcomingMoviesFromTurkey.Count > 0)
+        {
+            <div class="upcoming-movies">
+                <h3>@(Model.Language == "tr" ? "Yaklaşan Filmler (Türkiye)" : "Upcoming Movies (Turkey)")</h3>
+                <div class="upcoming-movies-container">
+                    @foreach (var movie in Model.UpcomingMoviesFromTurkey)
+                    {
+                        <div class="movie-card">
+                            <a href="Details/@movie.id">
+                                <img class="movie-poster" src="https://image.tmdb.org/t/p/w500/@movie.poster_path" alt="@movie.title">
+                            </a>
+                            <div class="movie-title">
+                                <a href="Details?id=@movie.id">@movie.title</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</body>
+</html>
